@@ -61,9 +61,7 @@ module.exports = {
                 if (tagSrc.match('^http')){// contents from url
                     const response = request('GET',tagSrc);
                     let data = response.getBody('utf-8');
-                    data = iconv.decode(data, encoding);
                     csvData = parse(data, {skip_empty_lines: true});
-
                 }
                 else if (tagSrc) { // contents from file
                     const ctxFilePath = (this.ctx.file || {}).path || this.ctx.ctx.file.path || null;

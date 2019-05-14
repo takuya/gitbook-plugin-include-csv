@@ -1,3 +1,17 @@
+# gitbook-plugin-include-csv をURL指定可能にした
+
+
+使い方
+```
+$ cd my-gitbook
+$ npm add https://github.com/takuya/gitbook-plugin-include-csv.git
+$ npm install
+$ npx gitbook-cli build
+```
+
+
+# 以下オリジナルドキュメント
+
 # gitbook-plugin-include-csv
 
 ## What is it?
@@ -5,6 +19,7 @@ A Gitbook plugin for including and rending CSV file in your book.
 
 ## How to install it?
 You can install via NPM:
+
 
 ```sh
 $ npm install --save gitbook-plugin-include-csv
