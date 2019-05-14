@@ -6,6 +6,7 @@ const parse = require('csv-parse/lib/sync');
 const path = require('path');
 const url = require('url');
 const iconv = require('iconv-lite');
+const request = require('sync-request');
 
 function buildTable(csvData, useHeader, exHeaders) {
     let html = "<table>";
@@ -41,18 +42,6 @@ function render2Html(text){
             .replace(/\t/g,"<span style='padding-left: 2.4rem'></span>");
 }
 
-function fetchCSVfromURL( url  ){
-    return new Promise(function(resolve, reject){
-        request( url , ( err ,res ,body  )=>{
-            if (!err && res.statusCode == 200) {
-                resolve(body);
-            } else {
-                reject(err);
-            }
-        });
-    });
-}
-
 const DEF_ENCODE = "utf-8";
 
 module.exports = {
@@ -69,12 +58,12 @@ module.exports = {
                 let csvData = null;
                 let relativeSrcPath = null; //css filepath from docment root
 
-                if (tagSrc.match('^http')){// contents from url 
-                    const csvData = (async ()=>{
-                        const url = tagSrc;
-                        const body = await fetchCSVfromURL(url);
-                        return body;
-                    })();
+                if (tagSrc.match('^http')){// contents from url
+                    const response = request('GET',tagSrc);
+                    ret data = response.getBody('utf-8');
+                    data = iconv.decode(data, encoding);
+                    csvData = parse(data, {skip_empty_lines: true});
+
                 }
                 else if (tagSrc) { // contents from file
                     const ctxFilePath = (this.ctx.file || {}).path || this.ctx.ctx.file.path || null;
