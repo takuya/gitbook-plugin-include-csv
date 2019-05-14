@@ -41,6 +41,18 @@ function render2Html(text){
             .replace(/\t/g,"<span style='padding-left: 2.4rem'></span>");
 }
 
+function fetchCSVfromURL( url  ){
+    return new Promise(function(resolve, reject){
+        request( url , ( err ,res ,body  )=>{
+            if (!err && res.statusCode == 200) {
+                resolve(body);
+            } else {
+                reject(err);
+            }
+        });
+    });
+}
+
 const DEF_ENCODE = "utf-8";
 
 module.exports = {
@@ -56,8 +68,15 @@ module.exports = {
                 const limit = blk.kwargs.limit || Infinity;
                 let csvData = null;
                 let relativeSrcPath = null; //css filepath from docment root
-                
-                if (tagSrc) { // contents from file
+
+                if (tagSrc.match('^http')){// contents from url 
+                    const csvData = (async ()=>{
+                        const url = tagSrc;
+                        const body = await fetchCSVfromURL(url);
+                        return body;
+                    })();
+                }
+                else if (tagSrc) { // contents from file
                     const ctxFilePath = (this.ctx.file || {}).path || this.ctx.ctx.file.path || null;
                     const bookRootPath = this.book.root || this.output.root();
                     relativeSrcPath = url.resolve(ctxFilePath, tagSrc);
